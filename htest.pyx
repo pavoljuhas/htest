@@ -4,7 +4,9 @@ Histogram
 General purpose histogram classes.
 """
 import numpy as np
+cimport numpy as np
 import math
+from libc.math cimport floor
 
 # Histogramming classes
 class histaxis:
@@ -26,6 +28,7 @@ class histaxis:
 class hist1d:
     def __init__(self,nbinx,xlow,xhigh):
         self.data = np.zeros(nbinx)
+        #cdef float self.data[nbinx]
         self.nbinx = nbinx
         self.xaxis = histaxis(nbinx,xlow,xhigh)
 
@@ -45,6 +48,30 @@ class hist1d:
             iidx = np.floor(fidx).astype(int)
             if iidx >= 0 and iidx < self.nbinx:
                 self.data[iidx] += wt
+
+    def fillcy(self,np.ndarray[np.float_t,ndim=1] xval, np.ndarray[np.float_t,ndim=1] weight):
+
+        print("hellocy")
+        cdef float low = self.xaxis.low
+        cdef float high = self.xaxis.high
+        cdef float binsize = self.xaxis.binsize
+        cdef int i
+        cdef float fidx
+        cdef int iidx
+        cdef float xval_i
+
+        cdef int xlen = len(xval)
+
+        cdef np.ndarray[np.float_t, ndim=1] data = self.data
+        cdef int nbinx = self.nbinx
+        for i in range(xlen):
+            xval_i = xval[i]
+            if not (xval_i >= low and xval_i < high):
+                continue
+
+            fidx = (xval[i] - low) / binsize
+            iidx = int(fidx)
+            data[iidx] += weight[i]
             
         return
 
