@@ -45,5 +45,7 @@ class hist2d:
 if __name__ == "__main__" :
     print('hello')
     h = hist1d(10,5,10)
-    h.fill(8,3)
+    x = np.array([8,6.1,6.2])
+    w = np.array([3,2,3])
+    h.fillarr(x,w)
     print h.data
