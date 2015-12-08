@@ -69,7 +69,7 @@ class hist1d:
             if not (xval_i >= low and xval_i < high):
                 continue
 
-            fidx = (xval[i] - low) / binsize
+            fidx = (xval_i - low) / binsize
             iidx = int(fidx)
             data[iidx] += weight[i]
             
