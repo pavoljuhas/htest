@@ -28,13 +28,15 @@ class hist1d:
         self.data = np.zeros(nbinx)
         self.nbinx = nbinx
         self.xaxis = histaxis(nbinx,xlow,xhigh)
-    def fill(self,xval,weight=1.0):
+
+
+    def fill(self,xval,weight):
         xbin=self.xaxis.bin(xval)
-        if xbin>=0 and xbin<self.xaxis.nbin:
-            self.data[xbin] += weight
-    def fillarr(self,xarr,weightarr):
-        for x,w in zip(xarr,weightarr):
-            self.fill(x,w)
+        inside = (0 <= xbin) & (xbin < self.nbinx)
+        xbinin = xbin[inside]
+        self.data += np.bincount(xbinin, weight[inside], self.nbinx)
+        return
+
 
 class hist2d:
     def __init__(self,nbinx,xlow,xhigh,nbiny,ylow,yhigh):
@@ -49,8 +51,8 @@ class hist2d:
 
 if __name__ == "__main__" :
     print('hello')
-    h = hist1d(10,5,10)
-    x = np.array([8,6.1,6.2])
-    w = np.array([3,2,3])
-    h.fillarr(x,w)
+    h = hist1d(10, 0, 10)
+    x = np.array([8,6.1,6.2, 37, -2.5])
+    w = np.array([3, 2.1, 7, 5, 99])
+    h.fill(x,w)
     print h.data
