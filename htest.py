@@ -27,7 +27,7 @@ class hist1d:
         xbin=self.xaxis.bin(xval)
         if xbin>=0 and xbin<self.xaxis.nbin:
             self.data[xbin] += weight
-    def fill(self,xarr,weightarr):
+    def fillarr(self,xarr,weightarr):
         for x,w in zip(xarr,weightarr):
             self.fill(x,w)
 
@@ -41,3 +41,9 @@ class hist2d:
         ybin=self.yaxis.bin(yval)
         if xbin>=0 and xbin<self.xaxis.nbin and ybin>=0 and ybin<self.yaxis.nbin:
             self.data[xbin,ybin] += weight
+
+if __name__ == "__main__" :
+    print('hello')
+    h = hist1d(10,5,10)
+    h.fill(8,3)
+    print h.data
