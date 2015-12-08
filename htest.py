@@ -1,7 +1,7 @@
 """
 Histogram
 
-General purpose histogram classes. 
+General purpose histogram classes.
 """
 import numpy as np
 import math
@@ -13,8 +13,13 @@ class histaxis:
         self.high = high
         self.nbin = nbin
         self.binsize = (high-low)/float(nbin)
-    def bin(self,val):
-        return int(math.floor((val-self.low)/self.binsize))
+
+    def bin(self, val):
+        vala = np.asarray(val).reshape(-1)
+        fidx = (vala - self.low) / self.binsize
+        iidx = np.floor(fidx).astype(int)
+        return iidx
+
     def values(self):
         return np.linspace(self.low+0.5*self.binsize,self.high-0.5*self.binsize,self.nbin)
 
