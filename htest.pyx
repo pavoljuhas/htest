@@ -39,7 +39,6 @@ class hist1d:
         self.data += np.bincount(xbinin, weight[inside], self.nbinx)
 
     def fill(self,xval,weight):
-        print("hello2")
         low = self.xaxis.low
         binsize = self.xaxis.binsize
         
@@ -49,9 +48,8 @@ class hist1d:
             if iidx >= 0 and iidx < self.nbinx:
                 self.data[iidx] += wt
 
-    def fillcy(self,np.ndarray[np.float_t,ndim=1] xval, np.ndarray[np.float_t,ndim=1] weight):
+    def fillcy(self,np.ndarray xval, np.ndarray[np.float_t,ndim=1] weight):
 
-        print("hellocy")
         cdef float low = self.xaxis.low
         cdef float high = self.xaxis.high
         cdef float binsize = self.xaxis.binsize
@@ -88,7 +86,6 @@ class hist2d:
             self.data[xbin,ybin] += weight
 
 if __name__ == "__main__" :
-    print('hello')
     h = hist1d(10, 0, 10)
     x = np.array([8,6.1,6.2, 37, -2.5])
     w = np.array([3, 2.1, 7, 5, 99])
