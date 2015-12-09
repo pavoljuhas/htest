@@ -3,6 +3,7 @@ Histogram
 
 General purpose histogram classes.
 """
+cimport cython
 import numpy as np
 cimport numpy as np
 import math
@@ -48,6 +49,24 @@ class hist1d:
             if iidx >= 0 and iidx < self.nbinx:
                 self.data[iidx] += wt
 
+    def fillcywithcall(self,np.ndarray[np.float_t, ndim=1] xval, np.ndarray[np.float_t,ndim=1] weight):
+        cdef np.ndarray[np.float_t, ndim=1] data = self.data
+        cdef float low = self.xaxis.low
+        cdef float high = self.xaxis.high
+        cdef float binsize = self.xaxis.binsize
+        cdef int i
+        cdef int j
+        cdef int xlen = len(xval)
+        cdef np.float_t* pdata = <np.float_t*> data.data
+        cdef np.float_t* px = <np.float_t*> xval.data
+        cdef np.float_t* pw = <np.float_t*> weight.data
+        for i in range(xlen):
+            fillonecy(px[i], pw[i], pdata, low, high, binsize)
+        return
+
+
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def fillcy(self,np.ndarray[np.float_t, ndim=1] xval, np.ndarray[np.float_t,ndim=1] weight):
 
         cdef float low = self.xaxis.low
@@ -72,6 +91,19 @@ class hist1d:
             data[iidx] += weight[i]
 
         return
+
+
+cdef void fillonecy(float xval, float weight,
+        np.float_t* pdata,
+        float low, float high, float binsize):
+    if not (low <= xval < high):
+        return
+    cdef float fidx
+    cdef int iidx
+    fidx = (xval - low) / binsize
+    iidx = int(fidx)
+    pdata[iidx] += weight
+    return
 
 
 class hist2d:
