@@ -41,7 +41,7 @@ class hist1d:
     def fill(self,xval,weight):
         low = self.xaxis.low
         binsize = self.xaxis.binsize
-        
+
         for val, wt in zip(xval,weight):
             fidx = (val - low) / binsize
             iidx = np.floor(fidx).astype(int)
@@ -70,7 +70,7 @@ class hist1d:
             fidx = (xval_i - low) / binsize
             iidx = int(fidx)
             data[iidx] += weight[i]
-            
+
         return
 
 
@@ -84,10 +84,4 @@ class hist2d:
         ybin=self.yaxis.bin(yval)
         if xbin>=0 and xbin<self.xaxis.nbin and ybin>=0 and ybin<self.yaxis.nbin:
             self.data[xbin,ybin] += weight
-
-if __name__ == "__main__" :
-    h = hist1d(10, 0, 10)
-    x = np.array([8,6.1,6.2, 37, -2.5])
-    w = np.array([3, 2.1, 7, 5, 99])
-    h.fill(x,w)
-    print(h.data)
+        return
