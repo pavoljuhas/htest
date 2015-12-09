@@ -55,3 +55,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Generated cython files
+/htest.c
