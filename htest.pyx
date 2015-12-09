@@ -9,6 +9,12 @@ cimport numpy as np
 import math
 from libc.math cimport floor
 
+
+ctypedef fused hnumtype:
+    np.int_t
+    np.float_t
+
+
 # Histogramming classes
 class histaxis:
     def __init__(self,nbin,low,high):
@@ -49,7 +55,7 @@ class hist1d:
             if iidx >= 0 and iidx < self.nbinx:
                 self.data[iidx] += wt
 
-    def fillcywithcall(self,np.ndarray[np.float_t, ndim=1] xval, np.ndarray[np.float_t,ndim=1] weight):
+    def fillcywithcall(self,np.ndarray[hnumtype, ndim=1] xval, np.ndarray[hnumtype, ndim=1] weight):
         cdef np.ndarray[np.float_t, ndim=1] data = self.data
         cdef float low = self.xaxis.low
         cdef float high = self.xaxis.high
@@ -58,8 +64,8 @@ class hist1d:
         cdef int j
         cdef int xlen = len(xval)
         cdef np.float_t* pdata = <np.float_t*> data.data
-        cdef np.float_t* px = <np.float_t*> xval.data
-        cdef np.float_t* pw = <np.float_t*> weight.data
+        cdef hnumtype* px = <hnumtype*> xval.data
+        cdef hnumtype* pw = <hnumtype*> weight.data
         for i in range(xlen):
             fillonecy(px[i], pw[i], pdata, low, high, binsize)
         return
@@ -67,7 +73,7 @@ class hist1d:
 
     @cython.boundscheck(False)
     @cython.wraparound(False)
-    def fillcy(self,np.ndarray[np.float_t, ndim=1] xval, np.ndarray[np.float_t,ndim=1] weight):
+    def fillcy(self,np.ndarray[hnumtype, ndim=1] xval, np.ndarray[hnumtype, ndim=1] weight):
 
         cdef float low = self.xaxis.low
         cdef float high = self.xaxis.high
@@ -75,7 +81,7 @@ class hist1d:
         cdef int i
         cdef float fidx
         cdef int iidx
-        cdef float xval_i
+        cdef hnumtype xval_i
 
         cdef int xlen = len(xval)
 
@@ -93,15 +99,13 @@ class hist1d:
         return
 
 
-cdef void fillonecy(float xval, float weight,
+cdef void fillonecy(hnumtype xval, hnumtype weight,
         np.float_t* pdata,
         float low, float high, float binsize):
     if not (low <= xval < high):
         return
-    cdef float fidx
     cdef int iidx
-    fidx = (xval - low) / binsize
-    iidx = int(fidx)
+    iidx = int((xval - low) / binsize)
     pdata[iidx] += weight
     return
 
