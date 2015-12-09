@@ -48,7 +48,7 @@ class hist1d:
             if iidx >= 0 and iidx < self.nbinx:
                 self.data[iidx] += wt
 
-    def fillcy(self,np.ndarray xval, np.ndarray[np.float_t,ndim=1] weight):
+    def fillcy(self,np.ndarray[np.float_t, ndim=1] xval, np.ndarray[np.float_t,ndim=1] weight):
 
         cdef float low = self.xaxis.low
         cdef float high = self.xaxis.high
